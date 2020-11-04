@@ -1,6 +1,6 @@
 {
   "name": "telar-mongo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Telar mongo in JavaScript.",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
