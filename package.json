@@ -1,20 +1,77 @@
 {
-  "name": "telar-mongo",
+  "name": "@telar/mongo",
   "version": "1.0.2",
   "description": "Telar mongo in JavaScript.",
   "main": "index.js",
   "module": "esm/index.js",
   "scripts": {
-    "test": "jest --config jestconfig.json --maxWorkers=10 --detectOpenHandles --forceExit",
+    "test": "jest --config jestconfig.json --coverage --maxWorkers=10 --detectOpenHandles --forceExit",
     "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "postbuild": "cp package.json dist/ && cp README.md dist/",
+    "prepublishOnly": "cp -r ./dist/* . && rm -rf ./dist",
+    "postpublish": "git clean -fd",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint:fix": "eslint . --ext .ts --fix",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run lint",
-    "version": "npm run format && git add -A src",
-    "preversion": "npm run lint",
-    "postversion": "git push && git push --tags"
+    "commit": "git-cz"
+  },
+  "publishConfig": {
+    "access": "public",
+    "branches": [
+      "master"
+    ]
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "{src,__mocks__,bin}/**/*.ts": [
+      "prettier --write"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/prompt"
+    }
+  },
+  "release": {
+    "prepare": [
+      {
+        "path": "@semantic-release/changelog"
+      },
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "npx replace-json-property package.json version ${nextRelease.version}"
+        }
+      ],
+      [
+        "@semantic-release/npm",
+        {
+          "pkgRoot": "dist"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "CHANGELOG.md"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ]
+    ]
   },
   "repository": {
     "type": "git",
@@ -22,7 +79,9 @@
   },
   "keywords": [
     "telar",
-    "mongo"
+    "mongo",
+    "telar-mongo",
+    "telar-core"
   ],
   "author": "Amir Movahedi <amir.gholzam@live.com>",
   "license": "MIT",
@@ -37,7 +96,12 @@
     "uuid": "^8.3.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@commitlint/prompt": "^11.0.0",
     "@shelf/jest-mongodb": "^1.2.3",
+    "commitizen": "^4.2.2",
+    "husky": "^4.3.0",
     "@types/jest": "^26.0.15",
     "@types/mongodb": "^3.5.32",
     "@typescript-eslint/eslint-plugin": "^4.5.0",
@@ -49,8 +113,5 @@
     "prettier": "^2.1.2",
     "ts-jest": "^26.4.2",
     "typescript": "^4.0.3"
-  },
-  "files": [
-    "lib"
-  ]
+  }
 }
