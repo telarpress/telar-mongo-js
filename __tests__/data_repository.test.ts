@@ -4,9 +4,10 @@
 // https://opensource.org/licenses/MIT
 
 import { v4 as uuidv4 } from 'uuid';
-import { data as coreData } from 'telar-core';
-import { DataRepositoryMongo, IMongoClient, MongoClient } from '../index';
-import { envDBPass } from '../env';
+import { DataRepositoryMongo, IMongoClient, MongoClient } from '../src/index';
+import { envDBPass } from '../src/env';
+import { IDataRepository } from '@telar/core/data/IDataRepository';
+import { IOperators } from '@telar/core/data/IOperators';
 
 interface Post {
     _id: string;
@@ -19,7 +20,7 @@ interface Post {
 
 describe('MongoDB', () => {
     let mongoClient: IMongoClient;
-    let repository: coreData.IDataRepository;
+    let repository: IDataRepository;
 
     const collectionName = 'unit_test_posts';
     const dbUsername = 'telar';
@@ -31,7 +32,7 @@ describe('MongoDB', () => {
         );
     }
     const dbName = 'telar';
-    const url = `mongodb+srv://${dbUsername}:%s@cluster0.l6ojz.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+    const url = `mongodb+srv://${dbUsername}:${dbPassword}@cluster0.l6ojz.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 
     const postListMock = [
         {
@@ -77,7 +78,7 @@ describe('MongoDB', () => {
     ];
     beforeAll(async () => {
         jest.setTimeout(20000);
-        mongoClient = await MongoClient.NewMongoClient(dbPassword, url, dbName);
+        mongoClient = await MongoClient.NewMongoClient(url, dbName);
         repository = DataRepositoryMongo.NewDataRepositoryMongo(mongoClient);
         const db = mongoClient.getDb();
 
@@ -168,7 +169,7 @@ describe('MongoDB', () => {
         expect(postList.length).toEqual(7);
     });
     it('[Mongo Repository] should return list of docs with query using filter', async () => {
-        const filter: coreData.IOperators = repository.operators.search('repository!');
+        const filter: IOperators = repository.operators.search('repository!');
         filter.in('ownerUserId', ['ffd35c15-1a7f-45b1-960c-d95d08f07c3f']);
         const postListResult = repository.find<Post>(collectionName, filter);
         if (postListResult.error()) {
@@ -195,7 +196,7 @@ describe('MongoDB', () => {
         sortMap['createdDate'] = -1;
         const skip = numberOfItems * (page - 1);
         const limit = numberOfItems;
-        const filter: coreData.IOperators = repository.operators.search('repository!');
+        const filter: IOperators = repository.operators.search('repository!');
         filter.in('ownerUserId', ['ffd35c15-1a7f-45b1-960c-d95d08f07c3f']);
         const postListResult = repository.find<Post>(collectionName, filter, limit, skip, sortMap);
         if (postListResult.error()) {
@@ -216,7 +217,7 @@ describe('MongoDB', () => {
         expect(postList[1]._id).toEqual(postListMock[0]._id);
     });
     it('[Mongo Repository] should update a doc into collection', async () => {
-        const filter: coreData.IOperators = repository.operators.plain({ _id: postListMock[0]._id });
+        const filter: IOperators = repository.operators.plain({ _id: postListMock[0]._id });
         const updateResult = await repository.update(
             collectionName,
             filter,
@@ -240,7 +241,7 @@ describe('MongoDB', () => {
         expect(post.name).toEqual('Amir');
     });
     it('[Mongo Repository] should update many docs in collection', async () => {
-        const filter: coreData.IOperators = repository.operators.plain({
+        const filter: IOperators = repository.operators.plain({
             ownerUserId: 'ffd35c15-1a7f-45b1-960c-d95d08f07c3f',
         });
         const data = { name: 'Ali' };
@@ -287,7 +288,7 @@ describe('MongoDB', () => {
         expect(posts[postListMock[1]._id].body).toEqual('Bulk update test!');
     });
     it('[Mongo Repository] should delete a doc in collection', async () => {
-        const filter: coreData.IOperators = repository.operators.plain({ _id: postListMock[0]._id });
+        const filter: IOperators = repository.operators.plain({ _id: postListMock[0]._id });
 
         const deletePostResult = await repository.delete(collectionName, filter, true);
         if (deletePostResult.error) {
@@ -305,7 +306,7 @@ describe('MongoDB', () => {
         expect(foundPost.noResult()).toEqual(true);
     });
     it('[Mongo Repository] should delete many docs in collection', async () => {
-        const filter: coreData.IOperators = repository.operators.plain({ isTest: true });
+        const filter: IOperators = repository.operators.plain({ isTest: true });
 
         const deletePostsResult = await repository.delete(collectionName, filter, false);
         if (deletePostsResult.error) {

@@ -2,8 +2,8 @@
   "name": "telar-mongo",
   "version": "1.0.2",
   "description": "Telar mongo in JavaScript.",
-  "main": "./lib/cjs/index.js",
-  "module": "./lib/esm/index.js",
+  "main": "index.js",
+  "module": "esm/index.js",
   "scripts": {
     "test": "jest --config jestconfig.json --maxWorkers=10 --detectOpenHandles --forceExit",
     "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
@@ -31,9 +31,9 @@
   },
   "homepage": "https://github.com/telarpress/telar-mongo-js#readme",
   "dependencies": {
+    "@telar/core": "^1.2.2",
     "mongo-heartbeat": "^2.0.1",
     "mongodb": "^3.6.2",
-    "telar-core": "^1.0.13",
     "uuid": "^8.3.1"
   },
   "devDependencies": {

@@ -3,12 +3,19 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import { data as coreData } from 'telar-core';
+import {
+    BulkUpdateOne,
+    IDataRepository,
+    IQueryResult,
+    IQuerySingleResult,
+    IRepositoryResult,
+} from '@telar/core/data/IDataRepository';
+import { IBaseOperators, IOperators } from '@telar/core/data/IOperators';
 import * as mongo from 'mongodb';
 import { IMongoClient } from './IMongoClient';
 import { OperatorsMongo } from './OperatorsMongo';
 
-class DataSingleResult<T> implements coreData.IQuerySingleResult<T> {
+class DataSingleResult<T> implements IQuerySingleResult<T> {
     private result: T | null;
     private err: Error | null;
 
@@ -36,7 +43,7 @@ class DataSingleResult<T> implements coreData.IQuerySingleResult<T> {
     }
 }
 
-class DataResult<T> implements coreData.IQueryResult<T> {
+class DataResult<T> implements IQueryResult<T> {
     private result: mongo.Cursor<T> | null;
     private currentDoc: T | null = null;
     private err: Error | null;
@@ -76,13 +83,13 @@ class DataResult<T> implements coreData.IQueryResult<T> {
     }
 }
 
-export class DataRepositoryMongo implements coreData.IDataRepository {
+export class DataRepositoryMongo implements IDataRepository {
     private client: IMongoClient;
     /**
      * Repository operators
      */
-    public _operators: coreData.IOperators;
-    get operators(): coreData.IOperators {
+    public _operators: IOperators;
+    get operators(): IOperators {
         this._operators = new OperatorsMongo();
         return this._operators;
     }
@@ -132,7 +139,7 @@ MongoDB 2.6 or higher.
      * @param collectionName Collection name
      * @param data Document to insert
      */
-    async save<T>(collectionName: string, data: T): Promise<coreData.IRepositoryResult> {
+    async save<T>(collectionName: string, data: T): Promise<IRepositoryResult> {
         const collection = this.client.getCollection(collectionName);
         try {
             const result = await collection.insertOne(<T>data);
@@ -153,7 +160,7 @@ MongoDB 2.6 or higher.
      * @param collectionName Collection name
      * @param data Documents to save
      */
-    async saveMany<T>(collectionName: string, data: T[]): Promise<coreData.IRepositoryResult> {
+    async saveMany<T>(collectionName: string, data: T[]): Promise<IRepositoryResult> {
         const collection = this.client.getCollection(collectionName);
         const insterOptions = { ordered: false };
         try {
@@ -180,11 +187,11 @@ MongoDB 2.6 or higher.
      */
     find<T>(
         collectionName: string,
-        filter: coreData.IBaseOperators,
+        filter: IBaseOperators,
         limit?: number,
         skip?: number,
         sort?: { [key: string]: number },
-    ): coreData.IQueryResult<T> {
+    ): IQueryResult<T> {
         const collection = this.client.getCollection(collectionName);
         let findOptions = {};
         if (sort && Object.keys(sort).length > 0) {
@@ -210,7 +217,7 @@ MongoDB 2.6 or higher.
      * @param collectionName Collection name
      * @param filter The cursor query object
      */
-    async findOne<T>(collectionName: string, filter: coreData.IBaseOperators): Promise<coreData.IQuerySingleResult<T>> {
+    async findOne<T>(collectionName: string, filter: IBaseOperators): Promise<IQuerySingleResult<T>> {
         const collection = this.client.getCollection(collectionName);
 
         try {
@@ -230,10 +237,10 @@ MongoDB 2.6 or higher.
      */
     async update(
         collectionName: string,
-        filter: coreData.IBaseOperators,
-        data: coreData.IBaseOperators,
+        filter: IBaseOperators,
+        data: IBaseOperators,
         opts?: Record<string, unknown>,
-    ): Promise<coreData.IRepositoryResult> {
+    ): Promise<IRepositoryResult> {
         const collection = this.client.getCollection(collectionName);
 
         try {
@@ -263,10 +270,10 @@ MongoDB 2.6 or higher.
      */
     async updateMany(
         collectionName: string,
-        filter: coreData.IBaseOperators,
-        data: coreData.IBaseOperators,
+        filter: IBaseOperators,
+        data: IBaseOperators,
         opts?: Record<string, unknown>,
-    ): Promise<coreData.IRepositoryResult> {
+    ): Promise<IRepositoryResult> {
         const collection = this.client.getCollection(collectionName);
         try {
             const result = await collection.updateMany(
@@ -296,10 +303,7 @@ MongoDB 2.6 or higher.
      * { filter: {_id: '32452'}, update: {$set: {a:2}}, upsert:true } }
      * ] )
      */
-    async bulkUpdateOne(
-        collectionName: string,
-        bulkData: coreData.BulkUpdateOne[],
-    ): Promise<coreData.IRepositoryResult> {
+    async bulkUpdateOne(collectionName: string, bulkData: BulkUpdateOne[]): Promise<IRepositoryResult> {
         const collection = this.client.getCollection(collectionName);
         const bulkOptions = { ordered: false };
         const operations: mongo.BulkWriteOperation<unknown>[] = [];
@@ -333,11 +337,7 @@ MongoDB 2.6 or higher.
      * @param filter The Filter used to select the document/s to remove
      * @param justOne Remove only one document
      */
-    async delete(
-        collectionName: string,
-        filter: coreData.IBaseOperators,
-        justOne: boolean,
-    ): Promise<coreData.IRepositoryResult> {
+    async delete(collectionName: string, filter: IBaseOperators, justOne: boolean): Promise<IRepositoryResult> {
         const collection = this.client.getCollection(collectionName);
 
         try {

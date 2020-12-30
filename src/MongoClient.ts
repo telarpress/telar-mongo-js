@@ -18,10 +18,8 @@ export class MongoClient implements IMongoClient {
     /**
      * Create a new mongoDB client
      */
-    static async NewMongoClient(mongoPassword: string, mongoDBHost: string, dbName: string): Promise<MongoClient> {
-        const url = String(mongoDBHost).replace('%s', String(mongoPassword));
-
-        const newClinet = new mongo.MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+    static async NewMongoClient(mongoURI: string, dbName: string): Promise<MongoClient> {
+        const newClinet = new mongo.MongoClient(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
         const client = await newClinet.connect();
 
         const mongoClient: MongoClient = new MongoClient(client, dbName);
