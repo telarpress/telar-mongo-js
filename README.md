@@ -13,9 +13,9 @@
 Telar Mongo is available on npm. You can install it using:
 
 ```sh
-npm install telar-mongo
+npm install @telar/mongo
 #or
-yarn add telar-mongo
+yarn add @telar/mongo
 ```
 
 ## Community
