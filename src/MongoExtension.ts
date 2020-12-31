@@ -1,5 +1,5 @@
-import { CoreMetaTypes } from '@telar/core/application';
 import { IDataRepository } from '@telar/core/data/IDataRepository';
+import { CoreMetaTypes } from '@telar/core/CoreMetaTypes';
 import { IServiceCollection } from '@telar/core/IServiceCollection';
 import { DataRepositoryMongo } from './DataRepositoryMongo';
 import { IMongoClient } from './IMongoClient';

@@ -67,3 +67,5 @@ node_modules/
 # Other
 /lib
 /dist
+/dist/*
+dist
