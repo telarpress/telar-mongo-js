@@ -90,12 +90,15 @@
   },
   "homepage": "https://github.com/telarpress/telar-mongo-js#readme",
   "dependencies": {
-    "@telar/core": "^1.4.0",
     "mongo-heartbeat": "^2.0.1",
     "mongodb": "^3.6.2",
     "uuid": "^8.3.1"
   },
+  "peerDependencies": {
+    "@telar/core": ">=1.4.0"
+  },
   "devDependencies": {
+    "@telar/core": "^1.4.0",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "@commitlint/prompt": "^11.0.0",
