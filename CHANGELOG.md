@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/telarpress/telar-mongo-js/compare/v1.2.0...v1.2.1) (2021-01-05)
+
+
+### Bug Fixes
+
+* add emitor for ts ([4c72803](https://github.com/telarpress/telar-mongo-js/commit/4c72803a725457c2ec7f2e719acfb99a87ee176b))
+
 # [1.2.0](https://github.com/telarpress/telar-mongo-js/compare/v1.1.0...v1.2.0) (2020-12-31)
 
 
