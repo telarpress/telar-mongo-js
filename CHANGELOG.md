@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/telarpress/telar-mongo-js/compare/v1.2.1...v1.2.2) (2021-01-05)
+
+
+### Bug Fixes
+
+* set telat core as a peerDependencies ([752cbb8](https://github.com/telarpress/telar-mongo-js/commit/752cbb84e4a8395a59dfebb602a9031370e5434b))
+
 ## [1.2.1](https://github.com/telarpress/telar-mongo-js/compare/v1.2.0...v1.2.1) (2021-01-05)
 
 
