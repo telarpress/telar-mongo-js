@@ -1,3 +1,11 @@
+# [1.2.0](https://github.com/telarpress/telar-mongo-js/compare/v1.1.0...v1.2.0) (2020-12-31)
+
+
+### Features
+
+* bind data repository ([8c0d3cb](https://github.com/telarpress/telar-mongo-js/commit/8c0d3cbffc611df37c92c19fa87a16c4bc9c51e2))
+* update telar core ([c630d57](https://github.com/telarpress/telar-mongo-js/commit/c630d57ae26e63f805e448c425db0294750d1785))
+
 # [1.1.0](https://github.com/telarpress/telar-mongo-js/compare/v1.0.2...v1.1.0) (2020-12-30)
 
 
